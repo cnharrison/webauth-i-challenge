@@ -1,0 +1,28 @@
+{
+  "name": "webauth-i-challenge",
+  "version": "1.0.0",
+  "description": "## Topics",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon index.js"
+  },
+  "dependencies": {
+    "bcrypt": "^3.0.6",
+    "dotenv": "^8.0.0",
+    "express": "^4.17.1",
+    "knex": "^0.17.3",
+    "nodemon": "^1.19.1",
+    "sqlite3": "^4.0.8"
+  },
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cnharrison/webauth-i-challenge.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/cnharrison/webauth-i-challenge/issues"
+  },
+  "homepage": "https://github.com/cnharrison/webauth-i-challenge#readme"
+}
