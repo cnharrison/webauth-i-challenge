@@ -47,3 +47,32 @@ server.post("/api/login", (req, res) => {
       res.status(500).json(error);
     });
 });
+
+function authorize(req, res, next) { 
+  const user = req.headers['x-user'];
+  const password =req.headers['x-password'];
+
+  if (!user || !password) { 
+    return res.status(401).json({message: 'invalid credentials'});
+  }
+
+  db.findByUser(user)
+  .first()
+  .then(user => { 
+    if (user && bcrypt.compareSync(password, user.password)) { 
+      next()
+    } else { 
+      res.status(401).json({ message: "invalid creds"});
+    }
+  })
+  .catch(error => { 
+    res.status(500).json(error);
+  })
+}
+
+server.get('/api/users', authorize, (req ,res) => { 
+  db.find().then(users => { 
+    res.json(users);
+  })
+  .catch(err => res.send(err))
+})
