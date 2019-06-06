@@ -34,7 +34,7 @@ server.post("/api/register", (req, res) => {
 
 server.post("/api/login", (req, res) => {
   let { user, password } = req.body;
-  db.findByUser({ user })
+  db.findByUser(user)
     .first()
     .then(user => {
       if (user && bcrypt.compareSync(password, user.password)) {
