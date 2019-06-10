@@ -12,7 +12,10 @@ const sessionConfig = {
     maxAge: 60 * 60 * 1000,
     secure: process.env.NODE_ENV === "production" ? true : false,
     httpOnly: true
-  }
+  },
+  store: new sessionStore({
+knex: require("../data/lambda.db3")
+  })
 };
 
 server.use(session(sessionConfig));
@@ -103,7 +106,7 @@ server.get("/api/users", authorize, (req, res) => {
     .catch(err => res.send(err));
 });
 
-server.get("/api/logout", (req, res) => { 
+server.get("/api/logout", authorize, (req, res) => { 
   req.session.destroy((err) => { 
     if (err) { 
       console.log(err)
