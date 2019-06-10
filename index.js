@@ -10,7 +10,7 @@ const sessionConfig = {
   saveUninitialized: false,
   cookie: {
     maxAge: 60 * 60 * 1000,
-    secure: false,
+    secure: process.env.NODE_ENV === "production" ? true : false,
     httpOnly: true
   }
 };
@@ -53,6 +53,8 @@ server.post("/api/login", (req, res) => {
     .first()
     .then(user => {
       if (user && bcrypt.compareSync(password, user.password)) {
+        req.session.user = user;
+
         res.status(200).json({ message: `welcome ${user.user}` });
       } else {
         res.status(401).json({ message: "invalid credentials" });
@@ -63,26 +65,34 @@ server.post("/api/login", (req, res) => {
     });
 });
 
+// function authorize(req, res, next) {
+//   const user = req.headers["x-user"];
+//   const password = req.headers["x-password"];
+
+//   if (!user || !password) {
+//     return res.status(401).json({ message: "invalid credentials" });
+//   }
+
+//   db.findByUser(user)
+//     .first()
+//     .then(user => {
+//       if (user && bcrypt.compareSync(password, user.password)) {
+//         next();
+//       } else {
+//         res.status(401).json({ message: "invalid creds" });
+//       }
+//     })
+//     .catch(error => {
+//       res.status(500).json(error);
+//     });
+// }
+
 function authorize(req, res, next) {
-  const user = req.headers["x-user"];
-  const password = req.headers["x-password"];
-
-  if (!user || !password) {
-    return res.status(401).json({ message: "invalid credentials" });
+  if (req.session && req.session.user) {
+    next();
+  } else {
+    res.status(401).json({ message: "not authorized" });
   }
-
-  db.findByUser(user)
-    .first()
-    .then(user => {
-      if (user && bcrypt.compareSync(password, user.password)) {
-        next();
-      } else {
-        res.status(401).json({ message: "invalid creds" });
-      }
-    })
-    .catch(error => {
-      res.status(500).json(error);
-    });
 }
 
 server.get("/api/users", authorize, (req, res) => {
