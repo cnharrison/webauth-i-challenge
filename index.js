@@ -102,3 +102,13 @@ server.get("/api/users", authorize, (req, res) => {
     })
     .catch(err => res.send(err));
 });
+
+server.get("/api/logout", (req, res) => { 
+  req.session.destroy((err) => { 
+    if (err) { 
+      console.log(err)
+      return res.status(500).json({ message: "there was an error"});
+    }
+    res.end();
+  })
+})
